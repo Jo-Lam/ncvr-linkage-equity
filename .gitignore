@@ -1,0 +1,12 @@
+# Data and outputs (contain NCIDs and names) - never commit
+data/
+results/
+demo_data/
+demo_results/
+*.csv.gz
+*.parquet
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc

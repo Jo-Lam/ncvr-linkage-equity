@@ -1,0 +1,211 @@
+{
+  "snapshots": [
+    {
+      "date": "2011-10-04",
+      "path": "data/ncvoter-20111004.csv.gz"
+    },
+    {
+      "date": "2012-10-01",
+      "path": "data/ncvoter-20121001.csv.gz"
+    },
+    {
+      "date": "2013-10-01",
+      "path": "data/ncvoter-20131001.csv.gz"
+    },
+    {
+      "date": "2014-10-03",
+      "path": "data/ncvoter-20141003.csv.gz"
+    },
+    {
+      "date": "2015-10-04",
+      "path": "data/ncvoter-20151004.csv.gz"
+    },
+    {
+      "date": "2016-10-04",
+      "path": "data/ncvoter-20161004.csv.gz"
+    },
+    {
+      "date": "2017-10-03",
+      "path": "data/ncvoter-20171003.csv.gz"
+    },
+    {
+      "date": "2018-10-03",
+      "path": "data/ncvoter-20181003.csv.gz"
+    },
+    {
+      "date": "2019-10-01",
+      "path": "data/ncvoter-20191001.csv.gz"
+    },
+    {
+      "date": "2020-10-03",
+      "path": "data/ncvoter-20201003.csv.gz"
+    },
+    {
+      "date": "2021-10-02",
+      "path": "data/ncvoter-20211002.csv.gz"
+    },
+    {
+      "date": "2022-10-02",
+      "path": "data/ncvoter-20221002.csv.gz"
+    }
+  ],
+  "read_csv": {
+    "sep": ",",
+    "encoding": "utf-8"
+  },
+  "columns": {
+    "ncid": "ncid",
+    "first_name": "first_name",
+    "last_name": "last_name",
+    "birth_year": "birth_year",
+    "gender": "gender",
+    "race": "race",
+    "ethnic": "ethnic",
+    "status": "status_code",
+    "voter_reg_num": "voter_reg_num",
+    "county_id": "county_desc"
+  },
+  "ethnicity": {
+    "hispanic_codes": [
+      "HL"
+    ],
+    "non_hispanic_codes": [
+      "NL"
+    ],
+    "missing_codes": [
+      "",
+      "UN",
+      "U",
+      "UNDESIGNATED"
+    ],
+    "race_map": {
+      "W": "Non-Hispanic White",
+      "B": "Non-Hispanic Black",
+      "A": "Asian",
+      "I": "Indigenous/Pacific Islander",
+      "P": "Indigenous/Pacific Islander",
+      "M": "Mixed",
+      "O": "Other"
+    }
+  },
+  "retained_statuses": null,
+  "gender_codes": [
+    "M",
+    "F"
+  ],
+  "min_age": 18,
+  "max_age": 115,
+  "duplicate_policy": "exclude_all",
+  "missing_id_tokens": [
+    "",
+    "nan",
+    "null",
+    "none"
+  ],
+  "profile_pairs": [
+    [
+      "2011-10-04",
+      "2012-10-01"
+    ],
+    [
+      "2012-10-01",
+      "2013-10-01"
+    ],
+    [
+      "2013-10-01",
+      "2014-10-03"
+    ],
+    [
+      "2014-10-03",
+      "2015-10-04"
+    ],
+    [
+      "2015-10-04",
+      "2016-10-04"
+    ],
+    [
+      "2016-10-04",
+      "2017-10-03"
+    ],
+    [
+      "2017-10-03",
+      "2018-10-03"
+    ],
+    [
+      "2018-10-03",
+      "2019-10-01"
+    ],
+    [
+      "2019-10-01",
+      "2020-10-03"
+    ],
+    [
+      "2020-10-03",
+      "2021-10-02"
+    ]
+  ],
+  "evaluation_date": "2022-10-02",
+  "role_design": "temporal_returning_people",
+  "model_max_records": 50000,
+  "evaluation_max_records": 20000,
+  "training_nonmatch_pairs": 200000,
+  "calibration_fraction": 0.25,
+  "seed": 20261004,
+  "replicates": 20,
+  "pca_components": 8,
+  "alteration_rates": {
+    "first_name": 0.1,
+    "last_name": 0.1
+  },
+  "relative_rates": {
+    "Non-Hispanic White": 1.0,
+    "Non-Hispanic Black": 2.0,
+    "Hispanic": 2.0,
+    "Asian": 1.5,
+    "Indigenous/Pacific Islander": 2.0,
+    "Mixed": 1.5,
+    "Other": 2.0,
+    "Unknown": 1.0
+  },
+  "minimum_profile_events": 20,
+  "profile_fallback": "pooled",
+  "max_template_attempts": 20,
+  "sensitivities": [
+    "all",
+    "errorsonly"
+  ],
+  "small_edit_max": 2,
+  "blocking": [
+    "demographic"
+  ],
+  "max_candidate_pairs": 20000000,
+  "chunk_pairs": 100000,
+  "mmr_targets": [
+    0.01,
+    0.02,
+    0.05,
+    0.1,
+    0.15,
+    0.2
+  ],
+  "fmr_targets": [
+    0.001,
+    0.005,
+    0.01,
+    0.02,
+    0.05
+  ],
+  "mmr_tolerance": 0.002,
+  "curve_points": 101,
+  "save_altered_records": false,
+  "save_predictions": true,
+  "model_date": "2022-10-02",
+  "model_training_scenario": "S1",
+  "model_training_replicate": 0,
+  "frequency_reference": "full_frame",
+  "generator": "typed",
+  "evaluation_min_per_group": 1000,
+  "open_distractors": 30000,
+  "open_nonmatch_fraction": 0.1,
+  "audit_all_pairs": false
+}
