@@ -47,6 +47,10 @@ FMR targets; 20 replicates.
   and at the calibration-selected 0.5% FMR target.
 - Name-feature model vs JW-TF: the same quantities, plus group FMR.
 - Pre-linkage measures: same definitions and models as v1 (`prelinkage_assessment.py`).
+  *Post-run reporting change (no change to any measure or model):* terms were aligned with `splink_prelinkage`.
+  Exact homonyms are reported as ambiguity of the full signature and surname-key counts as cardinality; one-edit
+  neighbours are renamed near-neighbour density. Group-level dominance, cardinality and ambiguity were recomputed with
+  the package (`run_splink_prelinkage.py`), adding within-group ambiguity; values agreed exactly with the original code.
 
 Each change's contribution is not separately identified in the main run; if needed, one-factor
 ablations will be run afterwards and labelled as such.

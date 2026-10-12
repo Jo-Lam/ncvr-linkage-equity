@@ -8,8 +8,11 @@ The pipeline:
 
 1. **Profiles** within-person name changes by ethnic group from consecutive North Carolina Voter Registry (NCVR)
    snapshots linked by NCID (change type, edit distance, position).
-2. **Assesses names before linkage**: dominance (name frequency, concentration), cardinality (homonyms and shared
-   surnames within the blocking key) and ambiguity (one-edit neighbours), by ethnic group.
+2. **Assesses names before linkage**, by ethnic group, using the terms of
+   [splink_prelinkage](https://github.com/Jo-Lam/splink_prelinkage): dominance (name frequency, concentration),
+   cardinality (records sharing the full forename-surname-birth year-gender signature or the surname block key),
+   ambiguity (full signature shared with another record), measured against the whole frame and within each group, and
+   near-neighbour density (names one Levenshtein edit away).
 3. **Simulates name changes** in an evaluation cohort under a 2x2 design: pooled vs group-specific change profiles,
    equal vs unequal exposure. Changes follow the observed type mix; a recording-errors-only sensitivity excludes
    genuine name changes.
@@ -30,7 +33,8 @@ No data are included. The NCVR snapshots are public: <https://dl.ncsbe.gov/index
 | `linkage.py` | Features, model fitting, blocking, one-to-one linking, metrics, threshold selection |
 | `run.py` | Runs every stage and writes all outputs and a manifest |
 | `matched.py` | Group results at matched false match rate bounds (descriptive benchmark) |
-| `prelinkage.py` | Pre-linkage dominance, cardinality and ambiguity; outcome models |
+| `prelinkage.py` | Record-level pre-linkage measures (dominance, cardinality, ambiguity, near-neighbour density); outcome models |
+| `run_splink_prelinkage.py` | Group-level dominance, cardinality and ambiguity with `splink_prelinkage`, checked against pandas |
 | `figures.py` | Manuscript figures |
 | `merge_blocks.py` | Merge replicate blocks run in parallel |
 | `make_demo.py`, `tests/` | Fictional demo data and unit tests |
@@ -90,6 +94,17 @@ Demo results have no substantive meaning.
    python prelinkage.py results/main
    python figures.py results/main results/figures
    ```
+
+4. Group-level pre-linkage summaries with `splink_prelinkage`, in a separate environment (it installs a development
+   version of Splink):
+
+   ```bash
+   python -m venv .venv-prelinkage
+   .venv-prelinkage/Scripts/python -m pip install -r requirements-prelinkage.txt
+   .venv-prelinkage/Scripts/python run_splink_prelinkage.py results/main
+   ```
+
+   This takes about a minute for the 8 million-record frame and writes aggregate outputs only.
 
 ## Key settings (`config_ncvr.json`)
 

@@ -41,7 +41,7 @@ def arrow(x1, y1, x2, y2, rad=0):
     ax.annotate('', (x2, y2), (x1, y1), arrowprops=dict(arrowstyle='->', lw=0.7, color='#444', connectionstyle=f'arc3,rad={rad}'))
 box(1, 38, 30, 11, 'NCVR snapshots 2011-2021\n10 annual pairs linked by NCID\n575,696 within-person\nname changes', '#e8f1fa')
 box(35, 38, 30, 11, 'Empirical change profiles by group\nchange type, edit distance, position\n(pooled or group-specific)', '#e8f1fa')
-box(69, 38, 30, 11, 'Pre-linkage assessment (2022 frame)\nname dominance, cardinality,\nambiguity by ethnic group', '#fdf2e3')
+box(69, 38, 30, 11, 'Pre-linkage assessment (2022 frame)\ndominance, cardinality, ambiguity,\nnear-neighbour density\nby ethnic group', '#fdf2e3')
 box(1, 20, 30, 12, 'October 2022 eligible frame\n(n = 8,082,366)\nname-frequency reference', '#eef7ec')
 box(35, 20, 30, 12, 'Model training sample (n = 50,000)\nsynthetic positives (pooled S1 profile)\n200,000 sampled non-matches', '#eef7ec')
 box(69, 20, 30, 12, 'Evaluation cohort (n = 23,703)\n>=1,000 per group; 25% calibration\nand 75% held-out test records', '#eef7ec')
@@ -134,7 +134,7 @@ fig, axs = plt.subplots(1, 2, figsize=(W, 2.7), sharey=True)
 for ax, mod in zip(axs, ['jw', 'jw_tf']):
     d = mo[mo.model == mod]
     for spec, off, col, lab in [('groups_only', -0.15, '#9e9e9e', 'Ethnic group only'),
-                                ('groups_plus_prelinkage', 0.15, COL[mod], '+ dominance, cardinality, ambiguity')]:
+                                ('groups_plus_prelinkage', 0.15, COL[mod], '+ pre-linkage name measures')]:
         v = d[d.spec == spec].set_index('g').reindex(minor)
         ax.errorbar(v.odds_ratio, yy + off, xerr=[v.odds_ratio - v.lo, v.hi - v.odds_ratio], fmt='o', ms=3.5, color=col, lw=0.8, label=lab)
     ax.axvline(1, color='k', lw=0.6); ax.set_xscale('log'); ax.set_xticks([0.1, 0.2, 0.5, 1], ['0.1', '0.2', '0.5', '1'])

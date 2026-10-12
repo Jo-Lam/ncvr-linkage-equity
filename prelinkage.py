@@ -1,24 +1,30 @@
-"""Pre-linkage assessment of name dominance, cardinality and ambiguity by ethnic group,
-and their association with linkage outcomes.
+"""Pre-linkage assessment of name dominance, cardinality, ambiguity and near-neighbour density by
+ethnic group, and their association with linkage outcomes.
 
-All pre-linkage measures use only the clean October 2022 eligible frame and the clean
-evaluation reference file: no linkage labels, scores or alterations.
+All pre-linkage measures use only the clean evaluation-date eligible frame and the clean
+evaluation reference file: no linkage labels, scores or alterations. Terms follow
+splink_prelinkage (https://github.com/Jo-Lam/splink_prelinkage); run_splink_prelinkage.py
+computes the group-level dominance, cardinality and ambiguity summaries with that package.
 
-Definitions (per record; computed on the full 2022 eligible frame unless stated):
-  Dominance    - population frequency of the record's surname and forename; at group
-                 level, surname/forename concentration (top-10 share, Herfindahl index,
-                 distinct names per 1,000 records).
-  Cardinality  - number of OTHER registrants with the identical forename, surname,
-                 birth year and gender (exact homonyms within the blocking key).
-  Ambiguity    - (a) edit-neighbourhood: number of OTHER registrants whose surname
-                 (forename) is exactly one Levenshtein edit from the record's;
-                 (b) block ambiguity: number of other evaluation-reference records in the
-                 same birth-year/gender block whose forename AND surname both have
-                 Jaro-Winkler >= 0.90 with the record's (descriptive only: sparse in a
-                 20,000-record cohort). Surname block cardinality: number of OTHER
-                 registrants sharing surname, birth year and gender.
+Definitions (per record; computed against the full eligible frame unless stated). A signature
+is the combination of values a record holds on a set of identifiers.
+  Dominance               - population frequency of the record's surname and forename; at group
+                            level, concentration (top-10 share, Herfindahl index, distinct names
+                            per 1,000 records).
+  Cardinality             - number of OTHER registrants sharing a signature: the full signature
+                            (forename, surname, birth year, gender; column `homonyms`) and the
+                            surname block key (surname, birth year, gender;
+                            `surname_block_cardinality`).
+  Ambiguity               - the full signature is shared with at least one other registrant
+                            (`homonyms` > 0: an exact homonym within the blocking key).
+  Near-neighbour density  - number of OTHER registrants whose surname (forename) is exactly one
+                            Levenshtein edit from the record's (`surname_neighbours`,
+                            `forename_neighbours`). Not covered by splink_prelinkage.
+  Block competitors       - descriptive only: other evaluation-reference records in the same
+                            birth-year/gender block whose forename AND surname both have
+                            Jaro-Winkler >= 0.90 with the record's (sparse in a 20,000-record cohort).
 
-Usage: python prelinkage_assessment.py RUN_DIR
+Usage: python prelinkage.py RUN_DIR
 RUN_DIR must hold clean/<evaluation_date>.csv.gz, simulation/reference.csv.gz, predictions/
 and results/*_operating.csv.gz (save_predictions=true).
 """
@@ -131,7 +137,7 @@ def main(run):
     o['group'] = pd.Categorical(o.ethnic_group, ORDER)
     o['altered'] = (o.change_state != 'neither').astype(int)
 
-    # Descriptive: P(missed | altered) by ambiguity tertile.
+    # Descriptive: P(missed | altered) by near-neighbour density tertile.
     alt = o[(o.altered == 1) & o.matchable].copy()
     alt['surname_neighbour_tertile'] = pd.qcut(alt.surname_neighbours.rank(method='first'), 3, labels=['low', 'mid', 'high'])
     alt.groupby(['sensitivity', 'model', 'scenario', 'surname_neighbour_tertile'], observed=True).missed.agg(['mean', 'size']).to_csv(out / 'missed_by_neighbour_tertile.csv')

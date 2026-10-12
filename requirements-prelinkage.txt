@@ -1,0 +1,5 @@
+# Separate environment for run_splink_prelinkage.py (splink_prelinkage version used for the paper)
+splink @ git+https://github.com/Jo-Lam/splink_prelinkage@10fb3a4037bb42ebf1b6868fd63fb9455081bc0c
+pyarrow
+pandas==3.0.3
+numpy==2.3.5
