@@ -318,7 +318,8 @@ def run(cfg,out,audit_only=False,prepared_root=None):
         if sensitivity not in ['all','small_edits','errorsonly']:raise ValueError(sensitivity)
         start=cfg.get('replicate_start',0)  # v2: lets replicate blocks run in parallel processes
         for rep in range(start,start+cfg['replicates']):
-            for scenario in SCENARIOS:
+            # default: the four main scenarios; a config may list others (e.g. the observed-exposure sensitivity)
+            for scenario in cfg.get('scenarios',['S1','S2','S3','S4']):
                 logging.info('Simulate and link %s %s replicate %s',sensitivity,scenario,rep)
                 altered,exposure=simulate(base,events,cfg,scenario,rep,sensitivity)
                 all_exposure.append(exposure)

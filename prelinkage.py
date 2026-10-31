@@ -117,7 +117,7 @@ def main(run):
     ref[['ncid', 'ethnic_group', 'split'] + measures + ['block_competitors']].to_csv(out / 'reference_measures.csv.gz', index=False)
     describe(ref, measures + ['block_competitors']).to_csv(out / 'cohort_measures_by_group.csv', index=False)
 
-    # Outcomes at the calibration-selected 5% MMR threshold (deployment-style), test queries only.
+    # Outcomes at the calibration-selected 10% MMR threshold (deployment-style), test records only.
     rows = []
     for f in sorted((run / 'predictions').glob('*.csv.gz')):
         sens, scen, rep, block, model = f.name[:-7].split('_', 4)
@@ -142,13 +142,19 @@ def main(run):
     alt['surname_neighbour_tertile'] = pd.qcut(alt.surname_neighbours.rank(method='first'), 3, labels=['low', 'mid', 'high'])
     alt.groupby(['sensitivity', 'model', 'scenario', 'surname_neighbour_tertile'], observed=True).missed.agg(['mean', 'size']).to_csv(out / 'missed_by_neighbour_tertile.csv')
 
-    base = 'missed ~ C(group, Treatment(reference="%s")) + C(change_state)' % REF
+    # Records with both names altered are (almost) always missed, which makes a change-state term inestimable
+    # (separation). Report them descriptively and fit the outcome models on records with exactly one altered name.
+    o[o.matchable].groupby(['sensitivity', 'model', 'scenario', 'change_state']).missed.agg(
+        n='size', missed='sum', share='mean').reset_index().to_csv(out / 'missed_by_change_state.csv', index=False)
+    state = 'C(change_state, Treatment(reference="forename_only"))'
+    base = 'missed ~ C(group, Treatment(reference="%s")) + %s' % (REF, state)
     full = base + ' + l_surname_freq + l_forename_freq + l_homonyms + l_surname_block_cardinality + l_surname_neighbours + l_forename_neighbours'
-    fbase = 'false ~ C(group, Treatment(reference="%s")) + C(change_state)' % REF
-    ffull = fbase + ' + l_surname_freq + l_forename_freq + l_homonyms + l_surname_block_cardinality + l_surname_neighbours + l_forename_neighbours'
+    fbase = base.replace('missed ~', 'false ~')
+    ffull = full.replace('missed ~', 'false ~')
+    single = o[o.change_state.isin(['forename_only', 'surname_only'])]
     res = []
-    for (sens, model, scen), d in o.groupby(['sensitivity', 'model', 'scenario']):
-        for outcome, forms, data in [('missed', (base, full), d[(d.altered == 1) & d.matchable]), ('false', (fbase, ffull), d[d.altered == 1])]:
+    for (sens, model, scen), d in single.groupby(['sensitivity', 'model', 'scenario']):
+        for outcome, forms, data in [('missed', (base, full), d[d.matchable]), ('false', (fbase, ffull), d)]:
             if data[outcome].sum() < 50:  # too few events for stable odds ratios; report descriptively
                 continue
             for label, form in zip(['groups_only', 'groups_plus_prelinkage'], forms):

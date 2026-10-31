@@ -33,12 +33,15 @@ No data are included. The NCVR snapshots are public: <https://dl.ncsbe.gov/index
 | `linkage.py` | Features, model fitting, blocking, one-to-one linking, metrics, threshold selection |
 | `run.py` | Runs every stage and writes all outputs and a manifest |
 | `matched.py` | Group results at matched false match rate bounds (descriptive benchmark) |
-| `prelinkage.py` | Record-level pre-linkage measures (dominance, cardinality, ambiguity, near-neighbour density); outcome models |
+| `prelinkage.py` | Record-level pre-linkage measures (dominance, cardinality, ambiguity, near-neighbour density); outcome models (records with exactly one altered name) |
+| `register_ambiguity.py` | Aggregate checks of exact-homonym ambiguity in the evaluation-date frame (status, duplicates, Unknown ethnicity) |
+| `ambiguity_or_check.py` | Ambiguity odds ratio alone, with name frequency, and in the full outcome model |
 | `run_splink_prelinkage.py` | Group-level dominance, cardinality and ambiguity with `splink_prelinkage`, checked against pandas |
 | `figures.py` | Manuscript figures |
 | `merge_blocks.py` | Merge replicate blocks run in parallel |
 | `make_demo.py`, `tests/` | Fictional demo data and unit tests |
 | `config_ncvr.json` | Configuration used for the paper (12 October snapshots, 2011-2022) |
+| `config_ncvr_observed.json` | Observed-exposure sensitivity analysis (scenario S3O) |
 | `config.example.json` | Template configuration |
 | `docs/DESIGN.md` | Pre-specified design and pre-run amendments |
 
@@ -105,6 +108,22 @@ Demo results have no substantive meaning.
    ```
 
    This takes about a minute for the 8 million-record frame and writes aggregate outputs only.
+
+5. Observed-exposure sensitivity analysis (scenario S3O: group-specific profiles, with the illustrative multipliers
+   replaced by each group's observed relative forename and surname change rates from Stage 1, in
+   `relative_rates_observed`). The configuration runs only S3O. Adding `"S3"` to `scenarios` re-runs S3 alongside it;
+   with the same seed this reproduces the main run's S3 results exactly:
+
+   ```bash
+   python run.py --config config_ncvr_observed.json --output results/observed --reuse-clean results/main
+   ```
+
+6. Additional ambiguity checks (aggregate output only):
+
+   ```bash
+   python register_ambiguity.py results/main data/ncvoter-20221002.csv.gz
+   python ambiguity_or_check.py results/main
+   ```
 
 ## Key settings (`config_ncvr.json`)
 

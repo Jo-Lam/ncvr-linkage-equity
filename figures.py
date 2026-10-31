@@ -39,18 +39,17 @@ def box(x, y, w, h, text, fc):
     ax.text(x + w / 2, y + h / 2, text, ha='center', va='center', fontsize=6.4)
 def arrow(x1, y1, x2, y2, rad=0):
     ax.annotate('', (x2, y2), (x1, y1), arrowprops=dict(arrowstyle='->', lw=0.7, color='#444', connectionstyle=f'arc3,rad={rad}'))
-box(1, 38, 30, 11, 'NCVR snapshots 2011-2021\n10 annual pairs linked by NCID\n575,696 within-person\nname changes', '#e8f1fa')
-box(35, 38, 30, 11, 'Empirical change profiles by group\nchange type, edit distance, position\n(pooled or group-specific)', '#e8f1fa')
-box(69, 38, 30, 11, 'Pre-linkage assessment (2022 frame)\ndominance, cardinality, ambiguity,\nnear-neighbour density\nby ethnic group', '#fdf2e3')
-box(1, 20, 30, 12, 'October 2022 eligible frame\n(n = 8,082,366)\nname-frequency reference', '#eef7ec')
-box(35, 20, 30, 12, 'Model training sample (n = 50,000)\nsynthetic positives (pooled S1 profile)\n200,000 sampled non-matches', '#eef7ec')
-box(69, 20, 30, 12, 'Evaluation cohort (n = 23,703)\n>=1,000 per group; 25% calibration\nand 75% held-out test records', '#eef7ec')
-box(1, 2, 47, 12, '2x2 simulation, 20 replicates\nS1 pooled/equal | S2 group-specific/equal\nS3 group-specific/unequal | S4 pooled/unequal\n10% alteration per name field', '#f3eefa')
-box(52, 2, 47, 12, 'Open-cohort linkage: altered queries vs reference\n(evaluation records without 10% of people + 30,000 distractors)\nfive models; birth-year and gender blocking;\nmissed and false matches by group', '#f3eefa')
+box(1, 38, 30, 11, 'Stage 1: name-change profiles\nNCVR snapshots 2011-2021;\n10 annual pairs linked by NCID;\n575,696 within-person name changes', '#e8f1fa')
+box(35, 38, 30, 11, 'Observed change profiles by group:\nchange type, edit distance, position;\npooled (all groups combined)\nor group-specific (own group only)', '#e8f1fa')
+box(69, 38, 30, 11, 'Stage 2: pre-linkage assessment\n(October 2022 register)\ndominance, cardinality, ambiguity,\nnear-neighbour density by group', '#fdf2e3')
+box(1, 20, 30, 12, 'October 2022 register\n(n = 8,082,366)\nname-frequency reference', '#eef7ec')
+box(35, 20, 30, 12, 'Model training sample (n = 50,000)\nsynthetic positives (pooled S1 profile);\n200,000 sampled non-matches', '#eef7ec')
+box(69, 20, 30, 12, 'Evaluation cohort (n = 23,703)\n>=1,000 per group; 25% calibration,\n75% held-out test records', '#eef7ec')
+box(1, 2, 47, 12, 'Stage 3: 2x2 simulation, 20 replicates\ntype of change: pooled or group-specific\nexposure: equal or unequal (10% overall)\nS1 pooled, equal | S2 group-specific, equal\nS3 group-specific, unequal | S4 pooled, unequal', '#f3eefa')
+box(52, 2, 47, 12, 'Stage 4: open-cohort linkage\nevaluation records vs reference file\n(90% of cohort + 30,000 people with no match);\nfive models; birth-year and gender blocking;\nmissed and false matches by group', '#f3eefa')
 arrow(31.5, 43.5, 34.5, 43.5); arrow(16, 38, 16, 32.5); arrow(31.5, 26, 34.5, 26); arrow(65.5, 26, 68.5, 26)
 arrow(50, 38, 50, 32.5); arrow(36, 38.5, 33, 14.5, rad=0.35); arrow(84, 20, 75, 14.5); arrow(48.5, 8, 51.5, 8)
 arrow(84, 38, 84, 32.5)
-ax.text(86, 34.5, 'measured\nbefore linkage', fontsize=6, color='#7a4b00')
 save(fig, 'Fig1')
 
 # ---- Fig 2: observed discrepancy rates and change types ----
@@ -69,8 +68,8 @@ fig, axs = plt.subplots(1, 3, figsize=(W, 3.0), gridspec_kw={'width_ratios': [1.
 y = np.arange(len(GROUPS))
 axs[0].barh(y - 0.2, rate['first_name'], 0.4, label='Forename', color='#4292c6')
 axs[0].barh(y + 0.2, rate['last_name'], 0.4, label='Surname', color='#d94801')
-axs[0].set_yticks(y, [SHORT[g] for g in GROUPS]); axs[0].invert_yaxis(); axs[0].set_xlabel('Changed pair-observations (%)')
-axs[0].set_title('A  Discrepancy rate', loc='left'); axs[0].legend(frameon=False, loc='center right', fontsize=6.3)
+axs[0].set_yticks(y, [SHORT[g] for g in GROUPS]); axs[0].invert_yaxis(); axs[0].set_xlabel('Observations with a name change (%)')
+axs[0].set_title('A  Name change rate', loc='left'); axs[0].legend(frameon=False, loc='center right', fontsize=6.3)
 for ax, field, title in [(axs[1], 'first_name', 'B  Forename change types'), (axs[2], 'last_name', 'C  Surname change types')]:
     share = ev[ev.field == field].groupby('ethnic_group').kind.value_counts(normalize=True).unstack().reindex(index=GROUPS, columns=kinds).fillna(0) * 100
     left = np.zeros(len(GROUPS))

@@ -5,7 +5,9 @@ from rapidfuzz.distance import Levenshtein, JaroWinkler
 from audit import FIELDS, save, stable_number
 
 SCENARIOS = {'S1':('pooled','equal'), 'S2':('specific','equal'),
-             'S3':('specific','unequal'), 'S4':('pooled','unequal')}
+             'S3':('specific','unequal'), 'S4':('pooled','unequal'),
+             # sensitivity: field-specific relative rates observed in Stage 1 (config relative_rates_observed)
+             'S3O':('specific','observed'), 'S4O':('pooled','observed')}
 
 def age_band(year, birth):
     if pd.isna(birth) or birth == '':
@@ -137,7 +139,8 @@ def simulate(base, events, cfg, scenario, replicate, sensitivity='all'):
     for fi,field in enumerate(FIELDS):
         target=cfg['alteration_rates'][field]
         rates=target_rates(base.ethnic_group,
-            {g:1 for g in base.ethnic_group.unique()} if exposure=='equal' else cfg['relative_rates'],target)
+            {g:1 for g in base.ethnic_group.unique()} if exposure=='equal'
+            else cfg['relative_rates_observed'][field] if exposure=='observed' else cfg['relative_rates'],target)
         counts=allocate_counts(base.ethnic_group,rates)
         result[field+'_selected']=False; result[field+'_changed']=False
         result[field+'_fallback']=False; result[field+'_failed']=False
